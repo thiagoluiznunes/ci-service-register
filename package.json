@@ -1,0 +1,29 @@
+{
+  "name": "ci-service-register",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "preinstall": "chmod 0755 scripts/**",
+    "start": "./node_modules/.bin/nodemon --exec babel-node ./bin/www",
+    "build": "scripts/build.sh",
+    "dev": "scripts/dev.sh",
+    "prod": "scripts/prod.sh"
+  },
+  "dependencies": {
+    "@babel/polyfill": "7.4.4",
+    "cookie-parser": "~1.4.4",
+    "core-js": "3.2.1",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "nodemon": "1.19.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.5.5",
+    "@babel/core": "7.5.5",
+    "@babel/node": "7.5.5",
+    "@babel/preset-env": "7.5.5",
+    "eslint": "6.1.0"
+  }
+}
