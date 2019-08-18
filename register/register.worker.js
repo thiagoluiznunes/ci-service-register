@@ -9,16 +9,21 @@ amqp.connect(`amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost`, (error0, 
     if (error1) {
       throw error1;
     }
-    const queue = 'service-register'
+    const queue = 'service-register';
+
     channel.assertQueue(queue, {
-      durable: true
+      durable: false
     });
-    // channel.prefetch(1);
+    channel.prefetch(1);
+    console.log(' [x] Awaiting RPC requests');
     channel.consume(queue, (msg) => {
-      console.log('Worker message');
-      const res = 'Sua string é essa!';
-      channel.sendToQueue(queue,
-        Buffer.from(res), {
+      const serviceName = msg.content.toString();
+
+      console.log(" [.] registering service", serviceName);
+      const res = `Service ${serviceName} registered!`;
+
+      channel.sendToQueue(msg.properties.replyTo,
+        Buffer.from(res.toString()), {
           correlationId: msg.properties.correlationId
         });
 
