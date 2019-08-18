@@ -7,10 +7,13 @@
     "start": "./node_modules/.bin/nodemon --exec babel-node ./bin/www",
     "build": "scripts/build.sh",
     "dev": "scripts/dev.sh",
-    "prod": "scripts/prod.sh"
+    "prod": "scripts/prod.sh",
+    "worker": "scripts/worker.sh"
   },
   "dependencies": {
     "@babel/polyfill": "7.4.4",
+    "amqplib": "0.5.5",
+    "babel-plugin-dotenv": "0.1.1",
     "cookie-parser": "~1.4.4",
     "core-js": "3.2.1",
     "debug": "~2.6.9",

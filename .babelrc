@@ -4,5 +4,8 @@
     "test": {
       "plugins": ["istanbul"]
     }
-  }
+  },
+  "plugins": [["babel-plugin-dotenv", {
+    "replacedModuleName": "babel-dotenv"
+  }]]
 }
