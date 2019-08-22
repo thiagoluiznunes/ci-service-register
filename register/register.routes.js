@@ -1,51 +1,15 @@
 import express from 'express';
 import uuid from 'uuid/v4';
-import amqp from 'amqplib/callback_api';
-import { RABBITMQ_USER, RABBITMQ_PASSWORD } from 'babel-dotenv';
+import client from './register.client';
 
 const router = express.Router();
-const queue = 'service-register'
 
 router.post('/register', (req, res) => {
-  amqp.connect(`amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost`, (error0, connection) => {
-    if (error0) {
-      throw error0;
-    }
-    connection.createChannel((error1, channel) => {
-      if (error1) {
-        throw error1;
-      }
-      channel.assertQueue('', {
-        exclusive: true
-      }, (error2, q) => {
-        if (error2) {
-          throw error2;
-        }
-        const correlationId = uuid();
-        const { service } = req.body;
+  const { service } = req.body;
+  const correlationId = uuid();
 
-        console.log(' [x] Requesting service register', service);
-
-        channel.consume(q.queue, (msg) => {
-          if (msg.properties.correlationId == correlationId) {
-            console.log(' [.] Got %s', msg.content.toString());
-            res.status(200).json(msg.content.toString());
-            setTimeout(() => {
-              connection.close();
-            }, 500);
-          }
-        }, {
-            noAck: true
-          });
-
-        channel.sendToQueue(queue,
-          Buffer.from(service.toString()), {
-            correlationId: correlationId,
-            replyTo: q.queue
-          });
-      });
-    });
-  });
+  client.consumeFromServer(res, correlationId);
+  client.publishToServer(service, correlationId);
 });
 
 export default router;
