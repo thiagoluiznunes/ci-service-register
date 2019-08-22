@@ -8,7 +8,7 @@
     "build": "scripts/build.sh",
     "dev": "scripts/dev.sh",
     "prod": "scripts/prod.sh",
-    "worker": "scripts/worker.sh"
+    "server": "scripts/server.sh"
   },
   "dependencies": {
     "@babel/polyfill": "7.4.4",
