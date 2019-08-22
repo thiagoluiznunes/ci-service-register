@@ -1,15 +1,10 @@
 import express from 'express';
+import uuid from 'uuid/v4';
 import amqp from 'amqplib/callback_api';
 import { RABBITMQ_USER, RABBITMQ_PASSWORD } from 'babel-dotenv';
 
 const router = express.Router();
 const queue = 'service-register'
-
-const generateUuid = () => {
-  return Math.random().toString() +
-    Math.random().toString() +
-    Math.random().toString();
-}
 
 router.post('/register', (req, res) => {
   amqp.connect(`amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost`, (error0, connection) => {
@@ -26,7 +21,7 @@ router.post('/register', (req, res) => {
         if (error2) {
           throw error2;
         }
-        const correlationId = generateUuid();
+        const correlationId = uuid();
         const { service } = req.body;
 
         console.log(' [x] Requesting service register', service);
