@@ -1,6 +1,6 @@
 import amqp from 'amqplib/callback_api';
 import event from 'events';
-import hp from './register.helper';
+import hp from './service.helper';
 import { RABBITMQ_USER, RABBITMQ_PASSWORD } from 'babel-dotenv';
 
 let pubChannel = null;
@@ -39,10 +39,16 @@ const consumeFromServer = (res, correlationId) => {
 }
 
 const publishToServer = (req, res, correlationId) => {
-  const { service, certificate } = req.body;
+  const { certificate } = req.body;
+  const message = {
+    service: req.service,
+    url: req.url,
+    version: req.version
+  };
+
   if (hp.isValid(certificate)) {
     pubChannel.sendToQueue(clientQueue,
-      Buffer.from(service.toString()), {
+      Buffer.from(message.toString()), {
         correlationId: correlationId,
         persistent: true
       });

@@ -1,6 +1,6 @@
 import express from 'express';
 import uuid from 'uuid/v4';
-import client from './register.client';
+import client from './service.client';
 
 const router = express.Router();
 
