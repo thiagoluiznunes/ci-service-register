@@ -1,5 +1,6 @@
 import amqp from 'amqplib/callback_api';
 import event from 'events';
+import hp from './register.helper';
 import { RABBITMQ_USER, RABBITMQ_PASSWORD } from 'babel-dotenv';
 
 let pubChannel = null;
@@ -37,12 +38,17 @@ const consumeFromServer = (res, correlationId) => {
   });
 }
 
-const publishToServer = (service, correlationId) => {
-  pubChannel.sendToQueue(clientQueue,
-    Buffer.from(service.toString()), {
-      correlationId: correlationId,
-      persistent: true
-    });
+const publishToServer = (req, res, correlationId) => {
+  const { service, certificate } = req.body;
+  if (hp.isValid(certificate)) {
+    pubChannel.sendToQueue(clientQueue,
+      Buffer.from(service.toString()), {
+        correlationId: correlationId,
+        persistent: true
+      });
+  } else {
+    return res.status(403).json('Access unauthorized!');
+  }
 }
 
 export default {

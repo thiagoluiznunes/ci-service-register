@@ -5,11 +5,10 @@ import client from './register.client';
 const router = express.Router();
 
 router.post('/register', (req, res) => {
-  const { service } = req.body;
   const correlationId = uuid();
 
   client.consumeFromServer(res, correlationId);
-  client.publishToServer(service, correlationId);
+  client.publishToServer(req, res, correlationId);
 });
 
 export default router;
