@@ -1,0 +1,10 @@
+db.createUser(
+   {
+     user: "ci-register-user",
+     pwd: "ciregister123",
+     roles:
+       [
+         { role: "dbOwner", db: "ci-register-db" }
+       ]
+   }
+)

@@ -12,15 +12,15 @@ const initConnection = async () => {
 
   const connection = mongoose.connection;
   connection.on('connected', () => {
-    console.log('Connected to db');
+    console.log(` [D] Connected to ${DB_NAME}`);
   });
 
   connection.on('disconnected', () => {
-    console.log('Disconnected to db');
+    console.log(` [D] Disconnected to ${DB_NAME}`);
   });
 
   connection.on('error', (error) => {
-    console.log('Db connection error ', error);
+    console.log(' [D] Connection error ', error);
     process.exit(1);
   });
 }
