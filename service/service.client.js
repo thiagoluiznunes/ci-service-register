@@ -1,6 +1,6 @@
 import amqp from 'amqplib/callback_api';
 import event from 'events';
-import hp from './service.helper';
+import ctrl from './service.controller';
 import { RABBITMQ_USER, RABBITMQ_PASSWORD } from 'babel-dotenv';
 
 let pubChannel = null;
@@ -34,21 +34,24 @@ amqp.connect(`amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost`, async (er
 
 const consumeFromServer = (res, correlationId) => {
   clientEmitter.once(correlationId, msg => {
-    res.status(200).json({ message: msg.toString() });
+    // res.status(200).json(msg.toString());
+    res.status(200).write(msg, 'binary');
+    res.end(null, 'binary');
   });
 }
 
-const publishToServer = (req, res, correlationId) => {
-  const { certificate } = req.body;
-  const message = {
-    name: req.body.name,
-    url: req.body.url,
-    version: req.body.version
+const publishToServer = async (req, res, correlationId) => {
+  const auth = 'authorization';
+  const certificate = req.body.certificate || req.query.certificate || req.headers[auth];
+  const data = req.body;
+  data.request = {
+    method: req.method,
+    url: req.url
   };
 
-  if (hp.isValid(certificate)) {
+  if (ctrl.isValid(certificate)) {
     pubChannel.sendToQueue(clientQueue,
-      Buffer.from(JSON.stringify(message)), {
+      Buffer.from(JSON.stringify(data)), {
         correlationId: correlationId,
         persistent: true
       });

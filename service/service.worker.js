@@ -1,8 +1,7 @@
 import amqp from 'amqplib/callback_api';
-import { Error } from 'mongoose';
 import { RABBITMQ_USER, RABBITMQ_PASSWORD } from 'babel-dotenv';
 
-import hp from './service.helper';
+import ctrl from './service.controller';
 import db from '../config/db';
 
 db.initConnection();
@@ -26,19 +25,10 @@ amqp.connect(`amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@localhost`, (error0, 
     channel.prefetch(1);
     console.log(' [x] Awaiting RPC requests');
     channel.consume(clientQueue, async (msg) => {
-      let response = null;
-      const service = JSON.parse(msg.content.toString());
-
-      console.log(" [.] Registering service", service.name);
-
-      await hp.registerService(service)
-        .then(res => {
-          if (res === typeof Error) response = `Fail to regiter ${service.name}`;
-          else response = `Service ${service.name} registered`;
-        });
-
+      const data = JSON.parse(msg.content.toString());
+      const response = await ctrl.handler(data);
       channel.sendToQueue(serverQueue,
-        Buffer.from(response.toString()), {
+        Buffer.from(response), {
           correlationId: msg.properties.correlationId
         });
 
