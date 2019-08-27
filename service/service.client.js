@@ -41,14 +41,14 @@ const consumeFromServer = (res, correlationId) => {
 const publishToServer = (req, res, correlationId) => {
   const { certificate } = req.body;
   const message = {
-    service: req.service,
-    url: req.url,
-    version: req.version
+    name: req.body.name,
+    url: req.body.url,
+    version: req.body.version
   };
 
   if (hp.isValid(certificate)) {
     pubChannel.sendToQueue(clientQueue,
-      Buffer.from(message.toString()), {
+      Buffer.from(JSON.stringify(message)), {
         correlationId: correlationId,
         persistent: true
       });

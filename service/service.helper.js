@@ -10,9 +10,9 @@ const registerService = async (service) => {
   let res = false;
   const newService = new Service(service);
 
-  await newService.save((err) => {
+  newService.save((err) => {
     if (err) res = err;
-    res = true;
+    else res = true;
   });
   return res;
 }
