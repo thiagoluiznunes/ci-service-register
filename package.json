@@ -8,7 +8,8 @@
     "build": "scripts/build.sh",
     "dev": "scripts/dev.sh",
     "prod": "scripts/prod.sh",
-    "worker": "scripts/worker.sh"
+    "worker": "scripts/worker.sh",
+    "gen": "node ./test/generate-key"
   },
   "dependencies": {
     "@babel/polyfill": "7.4.4",

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import Service from './service.model';
 import { AUTH_SECRET } from 'babel-dotenv';
 
-const isValid = async (certificate) => {
+const isValid = (certificate) => {
   return bcrypt.compareSync(AUTH_SECRET, certificate);
 }
 

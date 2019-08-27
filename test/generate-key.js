@@ -1,8 +1,15 @@
 const bcrypt = require('bcrypt');
+const readline = require('readline');
 
-const input = process.argv[2];
-((secret) => {
-  const salt = bcrypt.genSaltSync();
-  const hash = bcrypt.hashSync(secret, salt);
-  console.log(hash);
-})(input);
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+(() => {
+  rl.question('Type the secret key to create your hash: ', (secret) => {
+    const salt = bcrypt.genSaltSync();
+    const hash = bcrypt.hashSync(secret, salt);
+    console.log(hash);
+    rl.close();
+  });
+})();
